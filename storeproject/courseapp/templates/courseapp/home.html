@@ -1,0 +1,94 @@
+
+
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dependent Dropdown in Django</title>
+</head>
+<body>
+
+
+
+
+
+<h2>Student Form</h2>
+
+
+{% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+
+<!--<div style="display: inline-block">-->
+
+<!--<form method="post" id="studentForm" data-courses-url="{% url 'ajax_load_courses' %}">-->
+<!--    {% csrf_token %}-->
+<!--    {{ form.as_p }}-->
+<!--    <input type="submit" value="Submit">-->
+<!--</form>-->
+
+<!--<button onclick="location.href='{% url 'logout' %}'">Logout</button>-->
+
+<!--</div>-->
+
+<div style="display: inline-block;">
+  <form method="post" id="studentForm" data-courses-url="{% url 'ajax_load_courses' %}">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="submit" value="Submit">
+  </form>
+</div>
+<div style="display: inline-block;">
+  <button onclick="location.href='{% url 'logout' %}'">Logout</button>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<script>
+    $("#id_department").change(function () {
+        const url = $("#studentForm").attr("data-courses-url");  // get the url of the `load_courses` view
+        const departmentId = $(this).val();  // get the selected department ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /students/ajax/load-courses/ )
+            data: {
+                'department_id': departmentId       // add the department id to the GET parameters
+            },
+            success: function (data) {   // `data` is the return of the `load_courses` view function
+                $("#id_course").html(data);  // replace the contents of the course input with the data that came from the server
+                /*
+
+                let html_data = '<option value="">---------</option>';
+                data.forEach(function (course) {
+                    html_data += `<option value="${course.id}">${course.name}</option>`
+                });
+                console.log(html_data);
+                $("#id_course").html(html_data);
+
+                */
+            }
+        });
+
+    });
+</script>
+
+</body>
+</html>
